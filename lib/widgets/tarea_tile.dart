@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../models/desarrollador.dart';
+import '../../models/tarea.dart';
 
-class DesarrolladorTile extends StatelessWidget {
-  final Desarrollador desarrollador;
+class TareaTile extends StatelessWidget {
+  final Tarea tarea;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final bool isDeleting;
 
-  const DesarrolladorTile({
+  const TareaTile({
     Key? key,
-    required this.desarrollador,
+    required this.tarea,
     required this.onEdit,
     required this.onDelete,
     this.isDeleting = false,
@@ -28,7 +28,7 @@ class DesarrolladorTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  desarrollador.nombre,
+                  tarea.titulo,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -55,31 +55,43 @@ class DesarrolladorTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
+            Text(tarea.descripcion),
+            const SizedBox(height: 8),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Rol: '),
-                Chip(
-                  label: Text(desarrollador.rol),
-                  backgroundColor: Colors.blue[100],
+                Text('Nivel: ${'⭐' * tarea.nivel}${'☆' * (5 - tarea.nivel)}'),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _getUrgencyColor(tarea.urgencia),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    tarea.urgencia,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Experiencia: '),
-                Text('${desarrollador.experiencia} años'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Text('Disponible: '),
-                Icon(
-                  desarrollador.disponible
-                      ? Icons.check_circle
-                      : Icons.check_circle_outline,
-                  color: desarrollador.disponible ? Colors.green : Colors.grey,
+                Text('Entrega: ${_formatDate(tarea.fechaEntrega)}'),
+                Row(
+                  children: [
+                    const Text('Completada: '),
+                    Icon(
+                      tarea.completada
+                          ? Icons.check_circle
+                          : Icons.check_circle_outline,
+                      color: tarea.completada ? Colors.green : Colors.grey,
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -87,5 +99,22 @@ class DesarrolladorTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getUrgencyColor(String urgencia) {
+    switch (urgencia) {
+      case 'Alta':
+        return Colors.red;
+      case 'Media':
+        return Colors.orange;
+      case 'Baja':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

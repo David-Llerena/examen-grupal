@@ -1,104 +1,80 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:examen_grupal/models/desarrollador.dart';
-import 'package:examen_grupal/models/proyecto.dart';
-import 'package:examen_grupal/models/tarea.dart';
+import '../models/desarrollador.dart';
+import '../models/proyecto.dart';
+import '../models/tarea.dart';
 
 class DatabaseHelper {
-  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   // Colecciones
-  static final CollectionReference proyectosCollection = _firestore.collection(
-    'proyectos',
-  );
-  static final CollectionReference desarrolladoresCollection = _firestore
-      .collection('desarrolladores');
-  static final CollectionReference tareasCollection = _firestore.collection(
-    'tareas',
-  );
+  CollectionReference get desarrolladores =>
+      _firestore.collection('desarrolladores');
+  CollectionReference get proyectos => _firestore.collection('proyectos');
+  CollectionReference get tareas => _firestore.collection('tareas');
 
-  // ======================= PROYECTOS =======================
-  Future<void> insertProyecto(Proyecto proyecto) async {
-    await proyectosCollection.add(proyecto.toMap());
+  // Métodos para Desarrolladores
+  Future<void> agregarDesarrollador(Desarrollador desarrollador) async {
+    await desarrolladores.add(desarrollador.toMap());
   }
 
-  Future<List<Proyecto>> getProyectos() async {
-    final snapshot = await proyectosCollection.get();
-    return snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      return Proyecto(
-        id: doc.id,
-        nombre: data["nombre"] ?? "",
-        descripcion: data["descripcion"] ?? "",
-        fechaInicio: data["fechaInicio"] ?? "",
-        presupuesto: data["presupuesto"] ?? "",
-        entregado: data["entregado"] ?? "",
-        prioridad: data["prioridad"] ?? "",
-      );
-    }).toList();
+  Future<void> actualizarDesarrollador(Desarrollador desarrollador) async {
+    await desarrolladores.doc(desarrollador.id).update(desarrollador.toMap());
   }
 
-  Future<void> updateProyecto(Proyecto proyecto) async {
-    await proyectosCollection.doc(proyecto.id).update(proyecto.toMap());
+  Future<void> eliminarDesarrollador(String id) async {
+    await desarrolladores.doc(id).delete();
   }
 
-  Future<void> deleteProyecto(String id) async {
-    await proyectosCollection.doc(id).delete();
+  Stream<List<Desarrollador>> obtenerDesarrolladores() {
+    return desarrolladores.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return Desarrollador.fromMap(
+          doc.data() as Map<String, dynamic>,
+          doc.id,
+        );
+      }).toList();
+    });
   }
 
-  // ======================= DESARROLLADORES =======================
-  Future<void> insertDesarrollador(Desarrollador desarrollador) async {
-    await desarrolladoresCollection.add(desarrollador.toMap());
+  // Métodos para Proyectos
+  Future<void> agregarProyecto(Proyecto proyecto) async {
+    await proyectos.add(proyecto.toMap());
   }
 
-  Future<List<Desarrollador>> getDesarrolladores() async {
-    final snapshot = await desarrolladoresCollection.get();
-    return snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      return Desarrollador(
-        id: doc.id,
-        nombre: data["nombre"] ?? "",
-        rol: data["rol"] ?? "",
-        experiencia: data["experiencia"] ?? "",
-        disponible: data["disponible"] ?? "",
-      );
-    }).toList();
+  Future<void> actualizarProyecto(Proyecto proyecto) async {
+    await proyectos.doc(proyecto.id).update(proyecto.toMap());
   }
 
-  Future<void> updateDesarrollador(Desarrollador desarrollador) async {
-    await desarrolladoresCollection
-        .doc(desarrollador.id)
-        .update(desarrollador.toMap());
+  Future<void> eliminarProyecto(String id) async {
+    await proyectos.doc(id).delete();
   }
 
-  Future<void> deleteDesarrollador(String id) async {
-    await desarrolladoresCollection.doc(id).delete();
+  Stream<List<Proyecto>> obtenerProyectos() {
+    return proyectos.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return Proyecto.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+    });
   }
 
-  // ======================= TAREAS =======================
-  Future<void> insertTarea(Tarea tarea) async {
-    await tareasCollection.add(tarea.toMap());
+  // Métodos para Tareas
+  Future<void> agregarTarea(Tarea tarea) async {
+    await tareas.add(tarea.toMap());
   }
 
-  Future<List<Tarea>> getTareas() async {
-    final snapshot = await tareasCollection.get();
-    return snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      return Tarea(
-        id: doc.id,
-        titulo: data['titulo'] ?? '',
-        descripcion: data['descripcion'] ?? '',
-        fechaEntrega: data['fechaEntrega'] ?? '',
-        nivel: data['nivel'] ?? '',
-        completada: data['completada'] ?? '',
-        urgencia: data['urgencia'] ?? '',
-      );
-    }).toList();
+  Future<void> actualizarTarea(Tarea tarea) async {
+    await tareas.doc(tarea.id).update(tarea.toMap());
   }
 
-  Future<void> updateTarea(Tarea tarea) async {
-    await tareasCollection.doc(tarea.id).update(tarea.toMap());
+  Future<void> eliminarTarea(String id) async {
+    await tareas.doc(id).delete();
   }
 
-  Future<void> deleteTarea(String id) async {
-    await tareasCollection.doc(id).delete();
+  Stream<List<Tarea>> obtenerTareas() {
+    return tareas.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return Tarea.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+    });
   }
 }
