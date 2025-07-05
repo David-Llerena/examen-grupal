@@ -1,11 +1,13 @@
+import 'package:flutter/material.dart';
+
 import '../models/tarea.dart';
 
-class Tarea_Title extends StatelessWidget {
+class TareaTitle extends StatelessWidget {
   final Tarea tarea;
   final VoidCallback onDelete;
   final VoidCallback onEdit;
 
-  const Tarea_Title({
+  const TareaTitle({
     super.key,
     required this.tarea,
     required this.onDelete,
@@ -23,7 +25,9 @@ class Tarea_Title extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              tarea.completada ? Icons.check_circle : Icons.check_circle_outline,
+              tarea.completada
+                  ? Icons.check_circle
+                  : Icons.check_circle_outline,
               color: tarea.completada ? Colors.green : Colors.grey,
             ),
             IconButton(onPressed: onEdit, icon: const Icon(Icons.edit)),

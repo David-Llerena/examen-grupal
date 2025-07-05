@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:examen_grupal/models/desarrollador.dart';
 import 'package:examen_grupal/models/proyecto.dart';
 import 'package:examen_grupal/models/tarea.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:views/edit_desarrollador_page.dart';
-import 'package:services/database_service.dart';
-import 'package:widgets/desarrollador_tile.dart';
+import 'package:examen_grupal/views/desarrolladores/edit_desarrollador_page.dart';
+import 'package:examen_grupal/services/database_helper.dart';
+import 'package:examen_grupal/widgets/desarrollador_tile.dart';
 
 import '../../models/desarrollador.dart';
 
@@ -23,12 +23,12 @@ class _HomePageState extends State<HomePage> {
 
   void _refreshList() {
     setState(() {
-      _devList = DatabaseService().getDesarrolladores();
+      _devList = DatabaseHelper().getDesarrolladores();
     });
   }
 
   void _deleteDesarrollador(String id) async {
-    await DatabaseService().deleteDesarrollador(id);
+    await DatabaseHelper().deleteDesarrollador(id);
     _refreshList();
   }
 
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                   .map(
                     (dev) => DesarrolladorTile(
                       desarrollador: dev,
-                      onDelete: () => _deleteDesarrollador(dev.id),
+                      onDelete: () => _deleteDesarrollador(dev.id!),
                       onEdit: () async {
                         final result = await Navigator.push(
                           context,
