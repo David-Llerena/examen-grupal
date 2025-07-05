@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<List<Proyecto>> _proyectoList;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   void _refreshList() {
     setState(() {
+      isLoading = true;
       _proyectoList = DatabaseHelper().getProyectos();
     });
   }
@@ -44,8 +46,14 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                await DatabaseHelper().deleteProyecto(id);
-                _refreshList();
+                try {
+                  await DatabaseHelper().deleteProyecto(id);
+                  _refreshList();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error al eliminar el proyecto: $e')),
+                  );
+                }
               },
               child: const Text('Sí'),
             ),
@@ -71,11 +79,13 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
+          if (isLoading) 
+            const Center(child: CircularProgressIndicator()),
           Expanded(
             child: FutureBuilder<List<Proyecto>>(
               future: _proyectoList,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting && !isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
@@ -92,8 +102,7 @@ class _HomePageState extends State<HomePage> {
                               final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) =>
-                                      EditProyectoPage(proyecto: proyecto),
+                                  builder: (_) => EditProyectoPage(proyecto: proyecto),
                                 ),
                               );
                               if (result == true) {

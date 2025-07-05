@@ -30,7 +30,9 @@ class _AddProyectoPageState extends State<AddProyectoPage> {
             children: [
               TextFormField(
                 controller: nombreController,
-                decoration: const InputDecoration(labelText: 'Nombre del Proyecto'),
+                decoration: const InputDecoration(
+                  labelText: 'Nombre del Proyecto',
+                ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'El nombre es obligatorio';
@@ -120,7 +122,8 @@ class _AddProyectoPageState extends State<AddProyectoPage> {
                       nombre: nombreController.text,
                       descripcion: descripcionController.text,
                       fechaInicio: DateTime.parse(fechaInicioController.text),
-                      presupuesto: double.tryParse(presupuestoController.text) ?? 0.0,
+                      presupuesto:
+                          double.tryParse(presupuestoController.text) ?? 0.0,
                       entregado: entregado,
                       prioridad: prioridad,
                     );

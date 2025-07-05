@@ -33,10 +33,10 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    //Se agrega el nombre de como esten las pages
-    HomeProyectosPage(),
-    HomeDesarrolladoresPage(),
-    HomeTareasPage(),
+    // Páginas de navegación de la aplicación
+    proyectos.HomePage(), // Proyectos
+    desarrolladores.HomePage(), // Desarrolladores
+    Placeholder(), // Tareas - temporal hasta crear la página
   ];
 
   @override
