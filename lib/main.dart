@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart'; // Archivo generado automáticamente - Comentado temporalmente
 import 'views/proyectos/home_page.dart' as proyectos;
 import 'views/desarrolladores/home_desarrolladores_page.dart' as desarrolladores;
-// import 'views/tareas/home_tareas_page.dart'; // Comentado hasta que se cree el archivo
+import 'views/tareas/home_tareas_page.dart'; // Comentado hasta que se cree el archivo
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +40,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     // Páginas de navegación de la aplicación
     proyectos.HomePage(), // Proyectos
     desarrolladores.HomePage(), // Desarrolladores
-    Placeholder(), // Tareas - temporal hasta crear la página
+    tareas.HomePage(), // Tareas 
   ];
 
   @override
