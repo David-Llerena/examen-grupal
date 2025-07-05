@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:examen_grupal/models/proyecto.dart';  
+import 'package:examen_grupal/models/proyecto.dart';
 import 'package:examen_grupal/services/database_helper.dart';
 
 class EditProyectoPage extends StatefulWidget {
@@ -19,14 +19,23 @@ class _EditProyectoPageState extends State<EditProyectoPage> {
   late TextEditingController presupuestoController;
   late bool entregado;
   late String prioridad;
+  bool isLoading = false; // Indicador de carga
 
   @override
   void initState() {
     super.initState();
     nombreController = TextEditingController(text: widget.proyecto.nombre);
-    descripcionController = TextEditingController(text: widget.proyecto.descripcion);
-    fechaInicioController = TextEditingController(text: widget.proyecto.fechaInicio);
-    presupuestoController = TextEditingController(text: widget.proyecto.presupuesto.toString());
+    descripcionController = TextEditingController(
+      text: widget.proyecto.descripcion,
+    );
+    fechaInicioController = TextEditingController(
+      text: widget.proyecto.fechaInicio != null
+          ? widget.proyecto.fechaInicio.toString().split(' ')[0]
+          : '',
+    );
+    presupuestoController = TextEditingController(
+      text: widget.proyecto.presupuesto.toString(),
+    );
     entregado = widget.proyecto.entregado;
     prioridad = widget.proyecto.prioridad;
   }
@@ -52,7 +61,9 @@ class _EditProyectoPageState extends State<EditProyectoPage> {
             children: [
               TextFormField(
                 controller: nombreController,
-                decoration: const InputDecoration(labelText: 'Nombre del Proyecto'),
+                decoration: const InputDecoration(
+                  labelText: 'Nombre del Proyecto',
+                ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'El nombre es obligatorio';
@@ -83,7 +94,7 @@ class _EditProyectoPageState extends State<EditProyectoPage> {
                   FocusScope.of(context).requestFocus(FocusNode());
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.parse(fechaInicioController.text),
+                    initialDate: DateTime.now(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
                   );
@@ -132,26 +143,51 @@ class _EditProyectoPageState extends State<EditProyectoPage> {
                 onChanged: (val) => setState(() => prioridad = val!),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final proyectoActualizado = Proyecto(
-                      id: widget.proyecto.id,
-                      nombre: nombreController.text,
-                      descripcion: descripcionController.text,
-                      fechaInicio: fechaInicioController.text,
-                      presupuesto: double.tryParse(presupuestoController.text) ?? 0.0,
-                      entregado: entregado,
-                      prioridad: prioridad,
-                    );
-                    await DatabaseHelper().updateProyecto(proyectoActualizado);
-                    if (!mounted) return;
-                    // ignore: use_build_context_synchronously
-                    Navigator.pop(context, true);
-                  }
-                },
-                child: const Text('Guardar Cambios'),
-              ),
+              isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          try {
+                            final proyectoActualizado = Proyecto(
+                              id: widget.proyecto.id,
+                              nombre: nombreController.text,
+                              descripcion: descripcionController.text,
+                              fechaInicio: DateTime.parse(
+                                fechaInicioController.text,
+                              ),
+                              presupuesto:
+                                  double.tryParse(presupuestoController.text) ??
+                                  0.0,
+                              entregado: entregado,
+                              prioridad: prioridad,
+                            );
+                            await DatabaseHelper().updateProyecto(
+                              proyectoActualizado,
+                            );
+                            if (!mounted) return;
+                            Navigator.pop(context, true);
+                          } catch (e) {
+                            // Manejo de errores
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Error al guardar el proyecto: $e',
+                                ),
+                              ),
+                            );
+                          } finally {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        }
+                      },
+                      child: const Text('Guardar Cambios'),
+                    ),
             ],
           ),
         ),

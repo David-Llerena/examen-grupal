@@ -1,3 +1,6 @@
+import 'package:examen_grupal/models/proyecto.dart';
+import 'package:flutter/material.dart';
+
 class ProyectoTile extends StatelessWidget {
   final Proyecto proyecto;
   final VoidCallback onDelete;

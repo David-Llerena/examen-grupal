@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:examen_grupal/models/proyecto.dart';
-import 'package:examen_grupal/routes/routes.dart';
 import 'package:examen_grupal/services/database_helper.dart';
-import 'package:examen_grupal/views/edit_proyecto_page.dart';
+import 'package:examen_grupal/views/proyectos/edit_proyecto_page.dart';
 import 'package:examen_grupal/widgets/proyecto_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<List<Proyecto>> _proyectoList;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -23,11 +23,13 @@ class _HomePageState extends State<HomePage> {
 
   void _refreshList() {
     setState(() {
+      isLoading = true;
       _proyectoList = DatabaseHelper().getProyectos();
     });
   }
 
-  void _deleteProyecto(int id) {
+  void _deleteProyecto(String? id) {
+    if (id == null) return;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -44,8 +46,14 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                await DatabaseHelper().deleteProyecto(id);
-                _refreshList();
+                try {
+                  await DatabaseHelper().deleteProyecto(id);
+                  _refreshList();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error al eliminar el proyecto: $e')),
+                  );
+                }
               },
               child: const Text('Sí'),
             ),
@@ -64,15 +72,20 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Proyecto App', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Proyecto App',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Column(
         children: [
+          if (isLoading) 
+            const Center(child: CircularProgressIndicator()),
           Expanded(
             child: FutureBuilder<List<Proyecto>>(
               future: _proyectoList,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting && !isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
@@ -108,7 +121,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result = await Navigator.pushNamed(context, Routes.addProyecto);
+          final result = await Navigator.pushNamed(context, 'addProyecto');
           if (result == true) {
             _refreshList();
           }
