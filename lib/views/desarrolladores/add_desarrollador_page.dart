@@ -49,7 +49,7 @@ class _AddDesarrolladorPageState extends State<AddDesarrolladorPage> {
             ),
             const SizedBox(height: 12),
             SwitchListTile(
-              title: const Text('¿Está disponible?'),
+              title: const Text('¿Disponible?'),
               value: _disponible,
               onChanged: (value) => setState(() => _disponible = value),
             ),
