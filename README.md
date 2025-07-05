@@ -1,3 +1,3 @@
-# examen_grupal
+# prueba
 
 A new Flutter project.
