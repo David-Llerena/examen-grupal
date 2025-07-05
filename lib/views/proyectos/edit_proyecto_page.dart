@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:examen_grupal/models/proyecto.dart';  
+import 'package:examen_grupal/models/proyecto.dart';
 import 'package:examen_grupal/services/database_helper.dart';
 
 class EditProyectoPage extends StatefulWidget {
@@ -24,9 +24,17 @@ class _EditProyectoPageState extends State<EditProyectoPage> {
   void initState() {
     super.initState();
     nombreController = TextEditingController(text: widget.proyecto.nombre);
-    descripcionController = TextEditingController(text: widget.proyecto.descripcion);
-    fechaInicioController = TextEditingController(text: widget.proyecto.fechaInicio);
-    presupuestoController = TextEditingController(text: widget.proyecto.presupuesto.toString());
+    descripcionController = TextEditingController(
+      text: widget.proyecto.descripcion,
+    );
+    fechaInicioController = TextEditingController(
+      text: widget.proyecto.fechaInicio != null
+          ? widget.proyecto.fechaInicio.toString().split(' ')[0]
+          : '',
+    );
+    presupuestoController = TextEditingController(
+      text: widget.proyecto.presupuesto.toString(),
+    );
     entregado = widget.proyecto.entregado;
     prioridad = widget.proyecto.prioridad;
   }
@@ -52,7 +60,9 @@ class _EditProyectoPageState extends State<EditProyectoPage> {
             children: [
               TextFormField(
                 controller: nombreController,
-                decoration: const InputDecoration(labelText: 'Nombre del Proyecto'),
+                decoration: const InputDecoration(
+                  labelText: 'Nombre del Proyecto',
+                ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'El nombre es obligatorio';
@@ -139,8 +149,9 @@ class _EditProyectoPageState extends State<EditProyectoPage> {
                       id: widget.proyecto.id,
                       nombre: nombreController.text,
                       descripcion: descripcionController.text,
-                      fechaInicio: fechaInicioController.text,
-                      presupuesto: double.tryParse(presupuestoController.text) ?? 0.0,
+                      fechaInicio: DateTime.parse(fechaInicioController.text),
+                      presupuesto:
+                          double.tryParse(presupuestoController.text) ?? 0.0,
                       entregado: entregado,
                       prioridad: prioridad,
                     );

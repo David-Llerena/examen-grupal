@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:examen_grupal/models/proyecto.dart';
-import 'package:examen_grupal/routes/routes.dart';
 import 'package:examen_grupal/services/database_helper.dart';
-import 'package:examen_grupal/views/edit_proyecto_page.dart';
+import 'package:examen_grupal/views/proyectos/edit_proyecto_page.dart';
 import 'package:examen_grupal/widgets/proyecto_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,7 +26,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _deleteProyecto(int id) {
+  void _deleteProyecto(String? id) {
+    if (id == null) return;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -64,7 +64,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Proyecto App', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Proyecto App',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Column(
         children: [
@@ -89,7 +92,8 @@ class _HomePageState extends State<HomePage> {
                               final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => EditProyectoPage(proyecto: proyecto),
+                                  builder: (_) =>
+                                      EditProyectoPage(proyecto: proyecto),
                                 ),
                               );
                               if (result == true) {
@@ -108,7 +112,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result = await Navigator.pushNamed(context, Routes.addProyecto);
+          final result = await Navigator.pushNamed(context, 'addProyecto');
           if (result == true) {
             _refreshList();
           }

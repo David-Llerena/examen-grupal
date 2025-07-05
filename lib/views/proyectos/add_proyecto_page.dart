@@ -45,7 +45,6 @@ class _AddProyectoPageState extends State<AddProyectoPage> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
               ),
-              // Campo para la fecha de inicio
               TextFormField(
                 controller: fechaInicioController,
                 decoration: InputDecoration(
@@ -117,10 +116,10 @@ class _AddProyectoPageState extends State<AddProyectoPage> {
                   if (_formKey.currentState!.validate()) {
                     // Todo válido, continúa con la lógica
                     final proyecto = Proyecto(
-                      id: DateTime.now().microsecondsSinceEpoch,
+                      id: '',
                       nombre: nombreController.text,
                       descripcion: descripcionController.text,
-                      fechaInicio: fechaInicioController.text,
+                      fechaInicio: DateTime.parse(fechaInicioController.text),
                       presupuesto: double.tryParse(presupuestoController.text) ?? 0.0,
                       entregado: entregado,
                       prioridad: prioridad,
