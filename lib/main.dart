@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Archivo generado automáticamente
 import 'views/proyectos/home_proyectos_page.dart';
 import 'views/desarrolladores/home_desarrolladores_page.dart';
 import 'views/tareas/home_tareas_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
   runApp(MyApp());
 }
 
@@ -33,7 +38,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    // aqui se agrega el nombre de las paginas que se van a mostrar dependiendo de lo que pongan los companeros
+    //Se agrega el nombre de como esten las pages
     HomeProyectosPage(),
     HomeDesarrolladoresPage(),
     HomeTareasPage(),
