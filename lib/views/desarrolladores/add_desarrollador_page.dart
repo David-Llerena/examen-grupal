@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../../models/desarrollador.dart';
-import '../services/database_service.dart';
+import '../../services/database_helper.dart';
 
 class AddDesarrolladorPage extends StatefulWidget {
   const AddDesarrolladorPage({super.key});
@@ -63,7 +63,7 @@ class _AddDesarrolladorPageState extends State<AddDesarrolladorPage> {
                   experiencia: int.parse(experienciaController.text),
                   disponible: _disponible,
                 );
-                await DatabaseService().insertDesarrollador(desarrollador);
+                await DatabaseHelper().insertDesarrollador(desarrollador);
                 Navigator.pop(context, true);
               },
               child: const Text('Guardar'),

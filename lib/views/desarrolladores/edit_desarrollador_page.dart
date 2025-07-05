@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/desarrollador.dart';
-import '../services/database_service.dart';
+import '../../services/database_helper.dart';
 
 class EditDesarrolladorPage extends StatefulWidget {
   final Desarrollador desarrollador;
@@ -75,7 +75,7 @@ class _EditDesarrolladorPageState extends State<EditDesarrolladorPage> {
                   experiencia: int.parse(experienciaController.text),
                   disponible: disponible,
                 );
-                await DatabaseService().updateDesarrollador(actualizado);
+                await DatabaseHelper().updateDesarrollador(actualizado);
                 Navigator.pop(context, true);
               },
               child: const Text('Actualizar'),
